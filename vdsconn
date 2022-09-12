@@ -1,0 +1,152 @@
+DATABASE_FILE=ipsdb.txt
+
+function db_clear() {
+  rm -f "$DATABASE_FILE"
+}
+
+function db_set() {
+  echo "$1,$2" >> "$DATABASE_FILE"
+}
+
+function db_get() {
+  grep "^$1," "$DATABASE_FILE" | sed -e "s/^$1,//" | tail -n 1
+}
+
+function db_remove() {
+  db_set $1 ""
+}
+
+
+
+clear
+echo -e "\e[1;32mСписок действий\n------------\n1.Подключение\n2.Добавить адрес\n\e[1;31m3.Удалить адрес\e[1;37m\n= "
+read action
+if [[ "$action" == "1" ]]; then
+ echo -e "\e[1;32m-Доступные адреса- "
+ cat "$DATABASE_FILE"
+ echo -e "\e[1;37m\n= "
+ read join
+elif [[ "$action" == "2" ]]; then
+ echo -e "\e[1;32mВведите адрес:\e[1;37m\n= "
+ read iptoadd
+
+if [ -z $(grep "ip1" "$DATABASE_FILE") ]; then
+  clear
+  echo -e "\e[33mАдрес добавлен!"
+  sleep 2
+  db_set ip1 $iptoadd
+elif [ -z $(grep "ip2" "$DATABASE_FILE") ]; then
+  clear
+  echo -e "\e[33mАдрес добавлен!"
+  sleep 2
+  db_set ip2 $iptoadd
+elif [ -z $(grep "ip3" "$DATABASE_FILE") ]; then
+  clear
+  echo -e "\e[33mАдрес добавлен!"
+  sleep 2
+  db_set ip3 $iptoadd
+elif [ -z $(grep "ip4" "$DATABASE_FILE") ]; then
+  clear
+  echo -e "\e[33mАдрес добавлен!"
+  sleep 2
+  db_set ip4 $iptoadd
+elif [ -z $(grep "ip5" "$DATABASE_FILE") ]; then
+  clear
+  echo -e "\e[33mАдрес добавлен!"
+  sleep 2
+  db_set ip5 $iptoadd
+else
+  echo -e "\e[31mДостигнут лимит адресов!"
+  sleep 2
+fi
+
+ clear
+ echo -e "\e[1;32mВведите пароль:\e[1;37m\n= "
+ read passtoadd
+
+if [ -z $(grep "pass1" "$DATABASE_FILE") ]; then
+  clear
+  echo -e "\e[33mПароль добавлен!"
+  sleep 2
+  db_set pass1 $passtoadd
+elif [ -z $(grep "pass2" "$DATABASE_FILE") ]; then
+  clear
+  echo -e "\e[33mПароль добавлен!"
+  sleep 2
+  db_set pass2 $passtoadd
+
+elif [ -z $(grep "pass3" "$DATABASE_FILE") ]; then
+  clear
+  echo -e "\e[33mПароль добавлен!"
+  sleep 2
+  db_set pass3 $passtoadd
+elif [ -z $(grep "pass4" "$DATABASE_FILE") ]; then
+  clear
+  echo -e "\e[33mПароль добавлен!"
+  sleep 2
+  db_set pass4 $passtoadd
+
+elif [ -z $(grep "pass5" "$DATABASE_FILE") ]; then
+ clear
+  echo -e "\e[33mПароль добавлен!"
+  sleep 2
+ db_set pass5 $passtoadd
+else
+ echo "\e[31mДостигнут лимит паролей!"
+ sleep 2
+fi
+
+ bash vdsconn
+elif [[ "$action" == "3" ]]; then
+ clear
+ echo -e "\e[31mВыберите адрес"
+ cat "$DATABASE_FILE"
+ read delip
+ clear
+ echo -e "\e[31mВыберите пароль"
+ cat "$DATABASE_FILE"
+ read delpass
+ clear
+ echo -e "\e[31mУспешно удалено!"
+ sleep 2
+ sed -i '/^'$delip'/d' $DATABASE_FILE
+ sed -i '/^'$delpass'/d' $DATABASE_FILE
+ bash vdsconn
+fi
+
+if [[ "$action" == "reset" ]]; then
+  db_clear
+  tch="touch ipsdb.txt"
+  $tch
+fi
+
+if [[ "$join" == "ip1" ]]; then
+  clear
+
+  cmd1="exp $(db_get pass1) ssh -p 22 root@$(db_get ip1)"
+  $cmd1
+
+elif [[ "$join" == "ip2" ]]; then
+  clear
+
+  cmd="exp $(db_get pass2) ssh -p 22 root@$(db_get ip2)"
+  $cmd2
+
+elif [[ "$join" == "ip3" ]]; then
+  clear
+
+  cmd="exp $(db_get pass3) ssh -p 22 root@$(db_get ip3)"
+  $cmd3
+
+elif [[ "$join" == "ip4" ]]; then
+  clear
+
+  cmd="exp $(db_get pass4) ssh -p 22 root@$(db_get ip4)"
+  $cmd4
+
+elif [[ "$join" == "ip5" ]]; then
+  clear
+
+  cmd="exp $(db_get pass5) ssh -p 22 root@$(db_get ip5)"
+  $cmd5
+fi
